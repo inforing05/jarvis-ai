@@ -1984,7 +1984,25 @@ def lang_detect():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
+@app.route('/api/chat', methods=['POST'])
+def chat():
+    try:
+        data = request.json or {}
+        message = data.get('message', '')
 
+        model = genai.GenerativeModel('gemini-2.5-flash')
+        response = model.generate_content(message)
+
+        return jsonify({
+            "success": True,
+            "reply": response.text
+        })
+
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
 # ============================================================
 # START
 # ============================================================
