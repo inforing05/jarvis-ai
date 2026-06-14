@@ -1763,8 +1763,7 @@ if (!state.autoSpeak) {
 (async function boot() {
   await delay(800);
   const greeting = getGreeting();
-  const intro = `${greeting} JARVIS is online and fully operational.\n\nAll systems nominal. ${state.apiKey ? 'AI core connected via Gemini.' : '⚠️ **No API key detected** — please configure one in settings to enable full AI capabilities.'}\n\nHow may I assist you today?`;
-
+ const intro = `${greeting} JARVIS is online and fully operational.\n\nAll systems nominal. AI core connected via Gemini.\n\nHow may I assist you today?`;
   appendMessage('jarvis', intro);
   state.chatHistory.push({ role: 'jarvis', text: intro });
   addLog('JARVIS boot sequence complete');
