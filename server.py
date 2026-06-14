@@ -16,6 +16,12 @@ import threading
 import urllib.request
 import urllib.parse
 import re
+import google.generativeai as genai
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)  # Allow browser to call this API
