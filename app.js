@@ -1416,54 +1416,27 @@ async function routeCommand(raw) {
 // ============================================================
 // GEMINI API
 // ============================================================
-async function askGemini(userMessage) {
-  if (!state.apiKey) {
-    return "⚠️ No API key configured, Sir. Please click the **settings icon** in the top right and add your Gemini API key to unlock full AI capabilities.";
-  }
-
-  // Inject system prompt as first turn — works on all Gemini models
-  const messages = [
-    { role: 'user',  parts: [{ text: `[SYSTEM CONTEXT] ${JARVIS_SYSTEM_PROMPT}` }] },
-    { role: 'model', parts: [{ text: 'Understood. JARVIS online and operating under defined parameters, Sir.' }] },
-    ...state.chatHistory.slice(-6).map(m => ({
-      role: m.role === 'jarvis' ? 'model' : 'user',
-      parts: [{ text: m.text }],
-    })),
-    { role: 'user', parts: [{ text: userMessage }] },
-  ];
-
-  const body = {
-    contents: messages,
-    generationConfig: {
-      temperature: 0.7,
-      maxOutputTokens: 800,
-      topP: 0.9,
-    },
-  };
 
   // gemini-2.5-flash: latest model with best reasoning
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${state.apiKey}`;
+  async function askGemini(userMessage) {
 
-  const response = await fetch(url, {
+  const response = await fetch('/api/chat', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      message: userMessage
+    })
   });
 
-  if (!response.ok) {
-    const err = await response.json().catch(() => ({}));
-    const msg = err?.error?.message || `HTTP ${response.status}`;
-    if (response.status === 400 && msg.includes('API_KEY')) {
-      return '⚠️ Invalid API key, Sir. Please verify your key in the settings panel.';
-    }
-    if (response.status === 429 || /quota|rate.?limit|resource exhausted/i.test(msg)) {
-      return 'Gemini quota is exhausted for the current API key, Sir. Local commands still work, but AI chat is paused until the quota resets or you add a different key in settings.';
-    }
-    throw new Error(msg);
+  const data = await response.json();
+
+  if (!data.success) {
+    return `⚠️ ${data.error}`;
   }
 
-  const data = await response.json();
-  return data?.candidates?.[0]?.content?.parts?.[0]?.text || 'I encountered an unexpected response from the AI core, Sir.';
+  return data.reply;
 }
 
 // ============================================================
