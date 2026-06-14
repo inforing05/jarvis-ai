@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>J.A.R.V.I.S — Advanced AI Assistant</title>
+  <meta name="description" content="Just A Rather Very Intelligent System — An advanced AI assistant inspired by Tony Stark's JARVIS">
+  <link rel="shortcut icon" href="avatar.png" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="enhancements.css?v=1">
+</head>
+<body>
+
+  <!-- Animated Background -->
+  <div class="bg-grid"></div>
+  <canvas id="particleCanvas"></canvas>
+
+  <div class="jarvis-app">
+
+    <!-- HUD Corners -->
+    <div class="hud-corner tl"></div>
+    <div class="hud-corner tr"></div>
+    <div class="hud-corner bl"></div>
+    <div class="hud-corner br"></div>
+
+    <!-- ====== HEADER ====== -->
+    <header class="hud-header">
+      <div class="header-left">
+        <div class="logo-text">J.A.R.V.I.S</div>
+        <div class="logo-sub">JUST A RATHER VERY INTELLIGENT SYSTEM</div>
+      </div>
+      <div class="header-center">
+        <div class="system-status">
+          <span class="status-dot" id="statusDot"></span>
+          <span class="status-text" id="systemStatus">SYSTEM ONLINE</span>
+        </div>
+        <div class="scan-bar"><div class="scan-fill"></div></div>
+      </div>
+      <div class="header-right">
+        <div class="time-display" id="timeDisplay">--:--:--</div>
+        <div class="date-display" id="dateDisplay">--- -- ----</div>
+      </div>
+      <button class="icon-btn" id="contactsBtn" title="Contacts &amp; Messaging"><i class="fas fa-address-book"></i></button>
+      <button class="icon-btn" id="settingsBtn" title="Settings"><i class="fas fa-cog"></i></button>
+    </header>
+
+    <!-- ====== MAIN ====== -->
+    <main class="main-content">
+
+      <!-- LEFT PANEL -->
+      <aside class="side-panel left-panel">
+        <div class="panel-card">
+          <div class="panel-title">SYSTEM METRICS</div>
+          <div class="metric-row"><span class="metric-lbl">AI MODEL</span><span class="metric-val" id="aiModel">GEMINI 2.5 FLASH</span></div>
+          <div class="metric-row"><span class="metric-lbl">QUERIES</span><span class="metric-val" id="queryCount">0</span></div>
+          <div class="metric-row"><span class="metric-lbl">SESSION</span><span class="metric-val" id="sessionTime">00:00</span></div>
+          <div class="metric-row"><span class="metric-lbl">STATUS</span><span class="metric-val accent" id="currentMode">READY</span></div>
+          <div class="metric-row"><span class="metric-lbl">VOICE</span><span class="metric-val" id="voiceStatus">STANDBY</span></div>
+        </div>
+
+        <div class="panel-card">
+          <div class="panel-title">QUICK COMMANDS</div>
+          <div class="quick-grid" id="quickGrid">
+            <button class="q-btn" data-cmd="What time is it?"><i class="fas fa-clock"></i><span>Time</span></button>
+            <button class="q-btn" data-cmd="What's today's date?"><i class="fas fa-calendar-alt"></i><span>Date</span></button>
+            <button class="q-btn" data-cmd="Open Google"><i class="fab fa-google"></i><span>Google</span></button>
+            <button class="q-btn" data-cmd="Open YouTube"><i class="fab fa-youtube"></i><span>YouTube</span></button>
+            <button class="q-btn" data-cmd="play blinding lights"><i class="fas fa-music"></i><span>Music</span></button>
+            <button class="q-btn" data-cmd="Tell me a joke"><i class="fas fa-laugh-wink"></i><span>Joke</span></button>
+            <button class="q-btn" data-cmd="Give me a productivity tip"><i class="fas fa-bolt"></i><span>Tip</span></button>
+            <button class="q-btn" data-cmd="Open calculator"><i class="fas fa-calculator"></i><span>Calc</span></button>
+            <button class="q-btn" data-cmd="Help me brainstorm ideas"><i class="fas fa-lightbulb"></i><span>Ideas</span></button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- CENTER PANEL -->
+      <div class="center-panel">
+
+        <!-- Arc Reactor -->
+        <div class="reactor-wrap">
+          <div class="reactor" id="reactor">
+            <div class="r-orbit orbit-1"><div class="r-dot"></div></div>
+            <div class="r-orbit orbit-2"><div class="r-dot"></div></div>
+            <div class="r-orbit orbit-3"><div class="r-dot"></div></div>
+            <div class="r-ring ring-a"></div>
+            <div class="r-ring ring-b"></div>
+            <div class="r-core">
+              <div class="core-inner"></div>
+            </div>
+          </div>
+          <div class="reactor-info">
+            <span class="reactor-label" id="reactorLabel">IDLE</span>
+          </div>
+          <div class="waveform" id="waveform">
+            <div class="w-bar"></div><div class="w-bar"></div><div class="w-bar"></div>
+            <div class="w-bar"></div><div class="w-bar"></div><div class="w-bar"></div>
+            <div class="w-bar"></div><div class="w-bar"></div><div class="w-bar"></div>
+            <div class="w-bar"></div><div class="w-bar"></div><div class="w-bar"></div>
+            <div class="w-bar"></div><div class="w-bar"></div><div class="w-bar"></div>
+          </div>
+        </div>
+
+        <!-- Chat -->
+        <div class="chat-card">
+          <div class="chat-head">
+            <span class="panel-title" style="margin:0">COMMUNICATION CHANNEL</span>
+            <div class="chat-actions">
+              <button class="icon-btn sm" id="speakerBtn" title="Toggle Auto-Speak"><i class="fas fa-volume-up"></i></button>
+              <button class="icon-btn sm" id="clearBtn" title="Clear Chat"><i class="fas fa-trash-alt"></i></button>
+            </div>
+          </div>
+          <div class="chat-messages" id="chatMessages"></div>
+          <div class="typing-indicator" id="typingIndicator">
+            <div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div>
+            <span>Processing request...</span>
+          </div>
+        </div>
+
+        <!-- Input -->
+        <div class="input-zone">
+          <div class="input-wrap">
+            <span class="input-prefix">&gt;_</span>
+            <input type="text" id="textInput" placeholder="Awaiting your command, Sir..." autocomplete="off">
+            <button class="mic-btn" id="micBtn" title="Voice Input"><i class="fas fa-microphone"></i></button>
+            <button class="send-btn" id="sendBtn" title="Send Command"><i class="fas fa-paper-plane"></i></button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <aside class="side-panel right-panel">
+        <div class="panel-card">
+          <div class="panel-title">CAPABILITIES</div>
+          <div class="cap-list">
+            <div class="cap-item"><i class="fas fa-brain"></i>AI Conversations</div>
+            <div class="cap-item"><i class="fas fa-microphone"></i>Voice Commands</div>
+            <div class="cap-item"><i class="fas fa-search"></i>Web Search</div>
+            <div class="cap-item"><i class="fas fa-code"></i>Code Assistant</div>
+            <div class="cap-item"><i class="fas fa-lightbulb"></i>Idea Generator</div>
+            <div class="cap-item"><i class="fas fa-sticky-note"></i>Notes &amp; Reminders</div>
+            <div class="cap-item"><i class="fas fa-calculator"></i>Math &amp; Calculations</div>
+            <div class="cap-item"><i class="fas fa-globe"></i>Open Websites</div>
+          </div>
+        </div>
+        <div class="panel-card flex-grow">
+          <div class="panel-title">ACTIVITY LOG</div>
+          <div class="activity-log" id="activityLog">
+            <div class="log-entry">
+              <span class="log-time">INIT</span>
+              <span class="log-text">System initialized</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+    </main>
+  </div>
+
+  <!-- ====== MEDIA PLAYER (NOW PLAYING CARD) ====== -->
+  <div class="media-player" id="mediaPlayer">
+    <div class="mp-header">
+      <div class="mp-title-wrap">
+        <i class="fas fa-music mp-icon"></i>
+        <div class="mp-song-info">
+          <div class="mp-song-title" id="mpSongTitle">No track playing</div>
+          <div class="mp-song-sub">YouTube &middot; JARVIS Media</div>
+        </div>
+      </div>
+      <div class="mp-controls">
+        <button class="mp-btn" id="mpOpen" title="Open YouTube"><i class="fab fa-youtube"></i></button>
+        <button class="mp-btn" id="mpClose" title="Close"><i class="fas fa-times"></i></button>
+      </div>
+    </div>
+    <div class="mp-thumb-wrap">
+      <img id="mpThumb" src="" alt="Thumbnail">
+      <div class="mp-thumb-overlay">
+        <button class="mp-play-btn" id="mpPlayBtn">
+          <i class="fab fa-youtube"></i>
+          <span>OPEN ON YOUTUBE</span>
+        </button>
+      </div>
+    </div>
+    <div class="mp-footer">
+      <span class="mp-status" id="mpStatus">IDLE</span>
+      <div class="mp-vis">
+        <span class="mp-bar"></span><span class="mp-bar"></span><span class="mp-bar"></span>
+        <span class="mp-bar"></span><span class="mp-bar"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== SETTINGS MODAL ====== -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <span><i class="fas fa-cog"></i> &nbsp;SYSTEM CONFIGURATION</span>
+        <button class="icon-btn" id="closeSettings"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-group">
+          <label>Gemini API Key</label>
+          <div class="api-input-wrap">
+            <input type="password" id="apiKeyInput" placeholder="Enter your Gemini API key...">
+            <button class="icon-btn sm" id="toggleApiKey"><i class="fas fa-eye"></i></button>
+          </div>
+          <small>Get your free key at <a href="https://aistudio.google.com" target="_blank">aistudio.google.com</a></small>
+        </div>
+        <div class="setting-group">
+          <label>JARVIS Voice</label>
+          <select id="voiceSelect"></select>
+        </div>
+        <div class="setting-group">
+          <label>Speech Rate &nbsp;<span id="speechRateVal">1.0</span>x</label>
+          <input type="range" id="speechRate" min="0.5" max="2" step="0.1" value="1">
+        </div>
+        <div class="setting-group toggle-row">
+          <label>Auto-speak Responses</label>
+          <label class="toggle"><input type="checkbox" id="autoSpeak" checked><span class="slider"></span></label>
+        </div>
+        <button class="save-btn" id="saveSettings"><i class="fas fa-save"></i> &nbsp;SAVE CONFIGURATION</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== CONTACTS MODAL ====== -->
+  <div class="modal-overlay" id="contactsModal">
+    <div class="modal-box contacts-modal-box">
+      <div class="modal-head">
+        <span><i class="fas fa-address-book"></i> &nbsp;CONTACTS &amp; MESSAGING</span>
+        <button class="icon-btn" id="closeContacts"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <!-- Add Contact Row -->
+        <div class="contact-add-row">
+          <input type="text" id="cName"  placeholder="Name (e.g. John)">
+          <input type="text" id="cPhone" placeholder="Phone (+91XXXXXXXXXX)">
+          <input type="text" id="cEmail" placeholder="Email (optional)">
+          <button class="save-btn contact-add-btn" id="addContactBtn"><i class="fas fa-user-plus"></i> ADD</button>
+        </div>
+        <p class="contact-hint">Commands: <code>send whatsapp to John hello</code> &bull; <code>email John</code> &bull; <code>telegram John hi</code></p>
+        <!-- Contacts List -->
+        <div id="contactsList" class="contacts-list"></div>
+
+        <!-- Quick Send Panel -->
+        <div class="quick-send-panel">
+          <div class="panel-title">QUICK MESSAGE</div>
+          <div class="qs-row">
+            <select id="qsContact" class="qs-select"><option value="">-- Select Contact --</option></select>
+            <select id="qsApp" class="qs-select">
+              <option value="whatsapp">WhatsApp</option>
+              <option value="email">Email</option>
+              <option value="telegram">Telegram</option>
+              <option value="sms">SMS</option>
+            </select>
+          </div>
+          <textarea id="qsMessage" class="qs-textarea" placeholder="Type your message..."></textarea>
+          <button class="save-btn" id="qsSendBtn"><i class="fas fa-paper-plane"></i> &nbsp;SEND MESSAGE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script src="app.js?v=16"></script>
+</body>
+</html>
